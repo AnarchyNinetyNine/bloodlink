@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Enum, ForeignKey, DateTime, Boolean, JSON
+from sqlalchemy import Column, String, Enum, DateTime, Boolean, JSON
 from sqlalchemy.orm import relationship
 from models.base_model import Base
 import enum
@@ -17,10 +17,14 @@ class BloodType(enum.Enum):
     AB_POS = "AB+"
     AB_NEG = "AB-"
 
+class UserRole(enum.Enum):
+    DONOR = "DONOR"
+    HOSPITAL = "HOSPITAL"
+    ADMIN = "ADMIN"
+
 class Donor(Base):
     __tablename__ = "donors"
 
-    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     gender = Column(Enum(Gender))
@@ -29,7 +33,10 @@ class Donor(Base):
     location = Column(JSON)
     last_donation_date = Column(DateTime)
     availability = Column(Boolean)
+    email = Column(String(255), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
+    role = Column(Enum(UserRole))
+    phone_number = Column(String(255), unique=True, nullable=False)
 
     donations = relationship("BloodDonation", back_populates="donor")
     confirmations = relationship("BloodRequestConfirmation", back_populates="donor")
-    user = relationship("User", back_populates="donor")

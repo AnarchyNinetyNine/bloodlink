@@ -1,9 +1,9 @@
 from sqlalchemy import Column, String, Enum, Integer, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from models.base_model import Base
+from models.base_model import Base, BaseModel
 from models.donor import BloodType
 
-class BloodRequest(Base):
+class BloodRequest(BaseModel, Base):
     __tablename__ = "blood_requests"
 
     requester_id = Column(String(36), ForeignKey("hospitals.id", ondelete="CASCADE"), nullable=False)

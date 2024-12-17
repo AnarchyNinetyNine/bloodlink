@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
-from models.base_model import Base
+from models.base_model import Base, BaseModel
 
-class BloodDonation(Base):
+class BloodDonation(BaseModel, Base):
     __tablename__ = "blood_donations"
 
     donor_id = Column(String(36), ForeignKey("donors.id", ondelete="CASCADE"), nullable=False)

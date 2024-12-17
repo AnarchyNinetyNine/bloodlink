@@ -1,8 +1,9 @@
-from sqlalchemy import Column, String
-from models.base_model import Base
+from sqlalchemy import Column, String, Enum
+from models.base_model import Base, BaseModel
+from models.role import UserRole
 import enum
 
-class Admin(Base):
+class Admin(BaseModel, Base):
     __tablename__ = "admins"
 
     first_name = Column(String(255), nullable=False)

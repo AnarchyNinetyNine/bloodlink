@@ -1,10 +1,43 @@
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from datetime import datetime
 from sqlalchemy import Column, String, DateTime
-from sqlalchemy.sql import func
+from sqlalchemy.orm import declarative_base
+from uuid import uuid4
 
-@as_declarative()
-class Base:
-    """Base class for all models."""
-    id = Column(String(36), primary_key=True)
-    created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+Base = declarative_base()
+
+class BaseModel:
+    """Define the class models for related method and attribute."""
+    id = Column(String(60), primary_key=True, default=lambda: str(uuid4()))
+    created_at = Column(DateTime, default=datetime.utcnow())
+    updated_at = Column(DateTime, default=datetime.utcnow())
+
+    def __str__(self):
+        """String representation of objrct."""
+        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
+
+    def to_dict(self):
+        """Return the dict representation of a class instance."""
+        new_dict = self.__dict__.copy()
+
+        # Remove SQLAlchemy internal state
+        if "_sa_instance_state" in new_dict:
+            del new_dict["_sa_instance_state"]
+
+        # Serialize the class name
+        new_dict["__class__"] = self.__class__.__name__
+
+        # Handle datetime fields
+        for field in ['created_at', 'updated_at']:
+            if isinstance(new_dict.get(field), datetime):
+                new_dict[field] = new_dict[field].isoformat()
+
+        # Serialize related objects
+        for key, value in new_dict.items():
+            if hasattr(value, 'to_dict'):
+                new_dict[key] = value.to_dict()
+            elif isinstance(value, list):
+                new_dict[key] = [
+                    item.to_dict() if hasattr(item, 'to_dict')
+                    else item for item in value
+                ]
+        return new_dict

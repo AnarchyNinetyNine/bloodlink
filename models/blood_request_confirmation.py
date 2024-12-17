@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
-from models.base_model import Base
+from models.base_model import Base, BaseModel
 
-class BloodRequestConfirmation(Base):
+class BloodRequestConfirmation(BaseModel, Base):
     __tablename__ = "blood_request_confirmations"
 
     donor_id = Column(String(36), ForeignKey("donors.id", ondelete="CASCADE"), nullable=False)

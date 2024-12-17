@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Enum, DateTime, Boolean, JSON
 from sqlalchemy.orm import relationship
-from models.base_model import Base
+from models.base_model import Base,  BaseModel
 import enum
 
 class Gender(enum.Enum):
@@ -22,7 +22,7 @@ class UserRole(enum.Enum):
     HOSPITAL = "HOSPITAL"
     ADMIN = "ADMIN"
 
-class Donor(Base):
+class Donor(BaseModel, Base):
     __tablename__ = "donors"
 
     first_name = Column(String(255), nullable=False)
